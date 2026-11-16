@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nse-term"
+version = "1.0.0"
+description = "Pure-Python terminal client and resilient library for the official NSE India MCP servers"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+dependencies = [
+    "mcp>=2.3,<3",
+    "httpx>=0.28,<1",
+    "anyio>=4",
+    "pydantic>=2.6",
+    "typer>=0.12",
+    "rich>=15.0,<16",
+]
+
+[project.optional-dependencies]
+ai = ["openai>=1.40"]
+dev = ["pytest>=8", "openai>=1.40"]
+
+[project.scripts]
+nse-term = "nse_term.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nse_mcp", "src/nse_term"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: hits production NSE servers (nightly / pre-release only)"]
+addopts = "-m 'not live'"
+
+[ai]
+base_url = "https://api.openai.com/v1"
+model = "gpt-4o-mini"
